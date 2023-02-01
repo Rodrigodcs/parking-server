@@ -8,10 +8,20 @@ app.use(cors())
 app.use(express.json());
 
 
-let userRegistrationInfo = null
+let userRegistrationInfo = {
+    name:"RODRIGO",
+    vehicleModel: "gol",
+    vehicleType: 2,
+    vehicleColor: "#aaaaaa",
+    vehicleLicensePlate: "BAD1123",
+}
 
 const tagIdSchema = Joi.object({
     tagId: Joi.string().required()
+});
+
+const creditSchema = Joi.object({
+    valor: Joi.number().min(0).required()
 });
 
 const userInfoSchema = Joi.object({
@@ -21,17 +31,6 @@ const userInfoSchema = Joi.object({
     vehicleColor: Joi.string().regex(/^#[A-Fa-f0-9]{6}$/).max(7).min(7).required(),
     vehicleLicensePlate: Joi.string().min(7).max(7).required(),
 });
-
-const testUser = {
-    name:"RODRIGO",
-    vehicleModel: "gol",
-    vehicleType: 2,
-    vehicleColor: "#aaaaaa",
-    vehicleLicensePlate: "BAD1123",
-}
-
-console.log(userInfoSchema.validate(testUser))
-//console.log(tagIdSchema.validate({tagId:"asd"}).error.details[0].message)
 
 app.post("/entry", async (req, res) => {
     try{
@@ -56,7 +55,7 @@ app.post("/exit", async (req, res) => {
     }
 })
 
-app.post("/register/id", async (req, res) => {
+app.post("/tag", async (req, res) => {
     try{
         const currentUserInfo = userRegistrationInfo;
         if(!currentUserInfo) return res.status(405).send("Faça o registro do participante primeiro!");
@@ -66,15 +65,31 @@ app.post("/register/id", async (req, res) => {
 
         const {tagId}=req.body;
         const tagAlreadyRegistered = await connection.query(`
-            SELECT * FROM test
-            WHERE 'tagId' = $1
+            SELECT * FROM clients
+            WHERE "tagId" = $1
         `,[tagId]);
-        console.log(tagAlreadyRegistered.rows)
         
-        return res.send("ok")
+        if(tagAlreadyRegistered.rows.length){
+            return res.status(409).send("Tag já cadastrada");
+        }
+        const {name,vehicleModel,vehicleType,vehicleColor,vehicleLicensePlate} = currentUserInfo;
+        
+        await connection.query(`
+            INSERT INTO clients 
+            (name, "tagId", funds, debt, "vehicleModel", "vehicleType", "vehicleColor", "vehicleLicensePlate")
+            VALUES ($1,$2,0,0,$3,$4,$5,$6)
+        `,[name,tagId,vehicleModel,vehicleType,vehicleColor,vehicleLicensePlate]);
+
+        return res.status(201).send("Nova tag cadastrada");
     }catch(e){
-        console.log(e)
+        return res.status(500).send(e);
     }
+})
+
+app.post("/credit", async (req,res) => {
+    const bodyValidation = creditSchema.validate(req.body);
+    if(bodyValidation.error) return res.status(422).send(bodyValidation.error.details[0].message);
+
 })
 
 app.post("/register/info", async (req, res) => {
@@ -82,10 +97,11 @@ app.post("/register/info", async (req, res) => {
     if(bodyValidation.error) return res.status(422).send(bodyValidation.error.details[0].message);
 
     userRegistrationInfo = req.body;
+
     setTimeout(()=>{
         userRegistrationInfo = null;
-    },15000)
-    res.status(200).send("Passe o cartão nos próximos 15 segundos")
+    },15000);
+    return res.status(200).send("Passe o cartão nos próximos 15 segundos");
 })
 
 
@@ -107,10 +123,10 @@ app.get("/test", async (req, res) => {
 app.post("/test", async (req, res) => {
     const {name,age} = req.body
     try{
-        await connection.query('INSERT INTO test (name,age) VALUES ($1,$2)',[name,age]);
+        await connection.query(`INSERT INTO test (name, "aGe") VALUES ($1,$2)`,[name,age]);
         res.sendStatus(201);
     }catch(e){
-        console.log(e)
+        console.log("test",e)
     }
 })
 
