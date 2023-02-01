@@ -1,12 +1,15 @@
 import cors from "cors"
 import express from "express"
+
 import connection from './database.js'
 import Joi from "joi"
 
-const app = express()
-app.use(cors())
-app.use(express.json());
+import router from "./routes/router.js"
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.use(router);
 
 let userRegistrationInfo = {
     name:"RODRIGO",
@@ -20,11 +23,11 @@ const tagIdSchema = Joi.object({
     tagId: Joi.string().required()
 });
 
-const creditSchema = Joi.object({
+const clientCreditSchema = Joi.object({
     valor: Joi.number().min(0).required()
 });
 
-const userInfoSchema = Joi.object({
+const clientInfoSchema = Joi.object({
     name: Joi.string().required(),
     vehicleModel: Joi.string().required(),
     vehicleType: Joi.number().min(1).max(2).required(),
@@ -86,13 +89,17 @@ app.post("/tag", async (req, res) => {
     }
 })
 
-app.post("/credit", async (req,res) => {
+app.post("/clients/credit", async (req,res) => {
     const bodyValidation = creditSchema.validate(req.body);
     if(bodyValidation.error) return res.status(422).send(bodyValidation.error.details[0].message);
 
 })
 
-app.post("/register/info", async (req, res) => {
+app.post("/clients/history", async (req,res) => {
+
+})
+
+app.post("/clients/register", async (req, res) => {
     const bodyValidation = userInfoSchema.validate(req.body);
     if(bodyValidation.error) return res.status(422).send(bodyValidation.error.details[0].message);
 
