@@ -12,4 +12,4 @@ const clientInfoSchema = Joi.object({
     vehicleLicensePlate: Joi.string().min(7).max(7).required(),
 });
 
-export default {clientCreditSchema, clientInfoSchema};
+export {clientCreditSchema, clientInfoSchema};
