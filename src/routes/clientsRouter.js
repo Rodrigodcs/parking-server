@@ -3,7 +3,6 @@ import * as clientsController from "../controllers/clientsController.js"
 import {creditValidator, infoValidator} from "../middlewares/clientsValidator.js"
 import tagValidator from "../middlewares/tagValidator.js"
 
-
 const clientsRouter = Router()
 
 clientsRouter.post("/clients/tag", tagValidator, clientsController.optionSelector)
