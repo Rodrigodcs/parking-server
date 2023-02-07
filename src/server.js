@@ -1,6 +1,6 @@
-import app from "./app.js"
-import * as dotenv from 'dotenv'
-dotenv.config()
+import app from "./app.js";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 // // Opções de datas recebidas
 // const dataCorretaFuturo = "2023-02-28 01:00"

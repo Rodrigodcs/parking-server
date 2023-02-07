@@ -1,4 +1,4 @@
-import * as validator from "../schemas/clientSchema.js"
+import * as validator from "../schemas/clientSchema.js";
 
 export async function infoValidator(req,res,next) {
     const bodyValidation = validator.clientInfoSchema.validate(req.body);
@@ -12,4 +12,4 @@ export async function creditValidator(req,res,next) {
     next();
 }
 
-export default {creditValidator, infoValidator}
+export default {creditValidator, infoValidator};

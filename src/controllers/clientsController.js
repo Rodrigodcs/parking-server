@@ -1,24 +1,18 @@
-import connection from '../database.js'
+import connection from '../database.js';
 
-let userRegistrationInfo = {
-    name:"RODRIGO",
-    vehicleModel: "gol",
-    vehicleType: 2,
-    vehicleColor: "#aaaaaa",
-    vehicleLicensePlate: "BAD1123",
-}
+let userRegistrationInfo = null;
 let credit = null;
 let option = "register";
-let clientInfo = null
-let timeout = null
+let clientInfo = null;
+let timeout = null;
 
 //RECEIVES TAG FROM ESP32 AND SAVES INFO INTO DATABASE
 export async function optionSelector(req, res) {
-    console.log("chegou controller")
+    console.log("chegou controller");
     const {tagId}=req.body;
     try{
         if(option === "register"){
-            console.log("chegou registro")
+            console.log("chegou registro");
             const currentUserInfo = userRegistrationInfo;
             if(!currentUserInfo) return res.status(405).send("Faça o registro do cliente primeiro!");
 
@@ -37,18 +31,18 @@ export async function optionSelector(req, res) {
                 (name, "tagId", funds, debt, "vehicleModel", "vehicleType", "vehicleColor", "vehicleLicensePlate")
                 VALUES ($1,$2,3,0,$3,$4,$5,$6)
             `,[name,tagId,vehicleModel,vehicleType,vehicleColor,vehicleLicensePlate]);
-            console.log("registrou")
+            console.log("registrou");
             
-            userRegistrationInfo = null
-            option = null
-            clearTimeout(timeout)
+            userRegistrationInfo = null;
+            option = null;
+            clearTimeout(timeout);
 
             return res.status(201).send("Nova tag cadastrada");
         }
         if(option === "credit"){
-            console.log("chegou crédito")
+            console.log("chegou crédito");
             const userCredit = credit;
-            console.log(userCredit)
+            console.log(userCredit);
             if(!userCredit) return res.status(405).send("Adicione os créditos pelo cliente primeiro!");
             const userExists = await connection.query(`
                 SELECT * FROM clients
@@ -62,16 +56,16 @@ export async function optionSelector(req, res) {
                 SET funds = funds - debt + $1,
                     debt = 0
                 WHERE "tagId" = $2
-            `,[userCredit,tagId])
+            `,[userCredit,tagId]);
 
-            credit = null
-            option = null
-            clearTimeout(timeout)
+            credit = null;
+            option = null;
+            clearTimeout(timeout);
 
             return res.status(202).send("Creditos atualizados");
         }
         if(option === "info"){
-            console.log("chegou info")
+            console.log("chegou info");
             const user = await connection.query(`
                 SELECT * FROM clients
                 WHERE "tagId" = $1
@@ -81,7 +75,7 @@ export async function optionSelector(req, res) {
             }
 
             option = null
-            clearTimeout(timeout)
+            clearTimeout(timeout);
 
             clientInfo = user.rows[0]
             return res.status(200).send(user.rows[0]);
@@ -95,7 +89,7 @@ export async function optionSelector(req, res) {
 //RECEIVE REGISTRATION INFO FROM CLIENT
 export async function register(req, res) {
     userRegistrationInfo = req.body;
-    option = "register"
+    option = "register";
 
     timeout = setTimeout(()=>{
         userRegistrationInfo = null;
@@ -107,7 +101,7 @@ export async function register(req, res) {
 //RECEIVE CREDITS INFO FROM CLIENT
 export async function addCredit(req,res) {
     credit = req.body.valor;
-    option = "credit"
+    option = "credit";
 
     timeout = setTimeout(()=>{
         credit = null;
@@ -117,7 +111,7 @@ export async function addCredit(req,res) {
 }
 
 export async function getClientInfo(req,res) {
-    option = "info"
+    option = "info";
 
     timeout = setTimeout(()=>{
         option = null;
@@ -126,7 +120,7 @@ export async function getClientInfo(req,res) {
 }
 
 export async function waitingClientInfo(req,res) {
-    if(!clientInfo) return res.sendStatus(204)
+    if(!clientInfo) return res.sendStatus(204);
     return res.status(200).send(clientInfo);    
 } 
 

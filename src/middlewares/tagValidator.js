@@ -1,4 +1,4 @@
-import tagIdSchema from "../schemas/tagSchema.js"
+import tagIdSchema from "../schemas/tagSchema.js";
 
 export default async function tagValidator(req,res,next) {
     const bodyValidation = tagIdSchema.validate(req.body);
