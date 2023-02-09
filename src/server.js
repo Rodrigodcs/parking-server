@@ -26,7 +26,7 @@ dotenv.config();
 // console.log("Data atual + 30 dias: ",dataAtual.toLocaleDateString())
 
 
-
-app.listen(process.env.PORT || 8080, ()=>{
-    console.log("Server running on port "+process.env.PORT) 
+const port = process.env.PORT || 8080
+app.listen(port, ()=>{
+    console.log(`Server running in port: ${port}`) 
 })
