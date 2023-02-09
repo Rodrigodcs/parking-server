@@ -70,10 +70,11 @@ export async function optionSelector(req, res) {
                 SELECT * FROM clients
                 WHERE "tagId" = $1
             `,[tagId]);
+            console.log("2")
             if(!user.rows.length){
                 return res.status(409).send("Cliente não cadastrado");
             }
-
+            console.log("1")
             option = null
             clearTimeout(timeout);
 
@@ -82,6 +83,7 @@ export async function optionSelector(req, res) {
         }
         return res.status(201).send("Faça o pedido pelo cliente");
     }catch(e){
+        console.log(e)
         return res.status(500).send(e);
     }
 }
