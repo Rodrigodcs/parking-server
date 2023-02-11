@@ -114,6 +114,7 @@ export async function addCredit(req,res) {
 
 export async function getClientInfo(req,res) {
     option = "info";
+    console.log("teste")
 
     timeout = setTimeout(()=>{
         option = null;
