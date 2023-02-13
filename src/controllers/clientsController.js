@@ -123,8 +123,11 @@ export async function getClientInfo(req,res) {
 }
 
 export async function waitingClientInfo(req,res) {
-    if(!clientInfo) return res.sendStatus(204);
-    return res.status(200).send(clientInfo);    
+    const thisClient = clientInfo;
+    clientInfo = null
+    console.log(thisClient)
+    if(!thisClient) return res.sendStatus(204);
+    return res.status(200).send(thisClient);    
 } 
 
 export default {optionSelector,register,addCredit};
