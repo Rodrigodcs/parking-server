@@ -23,4 +23,22 @@ export async function postTest(req, res) {
     }
 }
 
-export default {health,getTest,postTest};
+export async function postEsp(req, res) {
+    try{
+        if(req.body.bod){
+            await connection.query(`INSERT INTO esp (bod) VALUES ($1)`,[req.body.bod]);
+            return res.status(201).send("Foi body");
+        }
+        if(req.headers.hed){
+            await connection.query(`INSERT INTO esp (hed) VALUES ($1)`,[req.headers.hed]);
+            return res.status(201).send("Foi header");
+        }
+        res.sendStatus(409);
+    }catch(e){
+        console.log("test",e);
+    }
+}
+
+
+
+export default {health,getTest,postTest,postEsp};
