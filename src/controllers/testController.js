@@ -36,6 +36,7 @@ export async function postEsp(req, res) {
         res.sendStatus(409);
     }catch(e){
         console.log("test",e);
+        res.send(e).status(500);
     }
 }
 
