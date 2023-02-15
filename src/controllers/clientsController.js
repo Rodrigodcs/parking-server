@@ -22,7 +22,7 @@ export async function optionSelector(req, res) {
             `,[tagId]);
             
             if(tagAlreadyRegistered.rows.length){
-                return res.status(409).send("Tag já cadastrada");
+                return res.status(408).send("Tag já cadastrada");
             }
             const {name,vehicleModel,vehicleType,vehicleColor,vehicleLicensePlate} = currentUserInfo;
             
@@ -81,7 +81,7 @@ export async function optionSelector(req, res) {
             clientInfo = user.rows[0]
             return res.status(200).send(user.rows[0]);
         }
-        return res.status(201).send("Faça o pedido pelo cliente");
+        return res.status(405).send("Faça o pedido pelo cliente");
     }catch(e){
         console.log(e)
         return res.status(500).send(e);

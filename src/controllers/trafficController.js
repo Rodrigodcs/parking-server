@@ -18,11 +18,11 @@ export async function checkIn(req, res) {
             SELECT * FROM parked
             WHERE "userId" = $1
         `,[id]);
-        if(alreadyIn.rows.length) return res.status(401).send("É preciso fazer checkout");
+        if(alreadyIn.rows.length) return res.status(402).send("É preciso fazer checkout");
         
         await connection.query(`INSERT INTO traffic ("userId", time, checks) VALUES ($1,$2,$3)`,[id, chackInTime, "in"]);
         await connection.query(`INSERT INTO parked ("userId") VALUES ($1)`,[id]);
-        return res.sendStatus(201);
+        return res.sendStatus(200);
     }catch(e){
         console.log(e);
     }
@@ -46,7 +46,7 @@ export async function checkOut(req, res) {
             WHERE "userId" = $1
         `,[id]);
             
-        if(!currentlyParked.rows.length) return res.status(401).send("É preciso fazer check in");
+        if(!currentlyParked.rows.length) return res.status(402).send("É preciso fazer check in");
 
         const lastCheckIn = await connection.query(`
             SELECT * FROM traffic
@@ -74,7 +74,7 @@ export async function checkOut(req, res) {
         await connection.query(`INSERT INTO traffic ("userId", time, checks) VALUES ($1,$2,$3)`,[id, checkOutTime, "out"]);
         await connection.query(`DELETE FROM parked WHERE "userId"=$1`,[id]);
         
-        res.sendStatus(201);
+        res.sendStatus(200);
     }catch(e){
         console.log(e);
     }
