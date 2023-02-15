@@ -29,7 +29,7 @@ export async function optionSelector(req, res) {
             await connection.query(`
                 INSERT INTO clients 
                 (name, "tagId", funds, debt, "vehicleModel", "vehicleType", "vehicleColor", "vehicleLicensePlate")
-                VALUES ($1,$2,3,0,$3,$4,$5,$6)
+                VALUES ($1,$2,50,0,$3,$4,$5,$6)
             `,[name,tagId,vehicleModel,vehicleType,vehicleColor,vehicleLicensePlate]);
             console.log("registrou");
             
