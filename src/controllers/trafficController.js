@@ -1,7 +1,8 @@
 import connection from '../database.js';
 
 export async function checkIn(req, res) {
-    const {tagId} = req.body;
+    const tagId = req.body;
+    console.log(tagId)
     try{
         const chackInTime = new Date();
         const userExists = await connection.query(`
@@ -28,7 +29,8 @@ export async function checkIn(req, res) {
 }
 
 export async function checkOut(req, res) {
-    const {tagId} = req.body;
+    const tagId = req.body;
+    console.log(tagId)
     try{
         const checkOutTime = new Date();
 

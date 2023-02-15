@@ -9,7 +9,7 @@ let timeout = null;
 //RECEIVES TAG FROM ESP32 AND SAVES INFO INTO DATABASE
 export async function optionSelector(req, res) {
     console.log("chegou controller");
-    const {tagId}=req.body;
+    const tagId=req.body;
     try{
         if(option === "register"){
             console.log("chegou registro");
