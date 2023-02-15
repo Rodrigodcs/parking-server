@@ -25,13 +25,9 @@ export async function postTest(req, res) {
 
 export async function postEsp(req, res) {
     try{
-        if(req.body.bod){
-            await connection.query(`INSERT INTO esp (bod) VALUES ($1)`,[req.body.bod]);
+        if(req.body){
+            await connection.query(`INSERT INTO esp (hed) VALUES ($1)`,[req.body]);
             return res.status(201).send("Foi body");
-        }
-        if(req.headers.hed){
-            await connection.query(`INSERT INTO esp (hed) VALUES ($1)`,[req.headers.hed]);
-            return res.status(201).send("Foi header");
         }
         res.sendStatus(409);
     }catch(e){
